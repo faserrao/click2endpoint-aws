@@ -165,8 +165,18 @@ export function getNextQuestion(answers: Record<string, string>): string | null 
     return 'templateContent';
   }
 
-  // Then ask about recipient style
+  // Only ask about recipient style if the template doesn't already have addresses
   if (!recipientStyle) {
+    // If template contains addresses, skip this question entirely
+    if (templateUsage === 'true' && templateContent === 'addressList') {
+      // Don't ask about recipientStyle - addresses are in template
+      // Continue to next question (personalization if multi/merge)
+      if ((docType === 'multi' || docType === 'merge') && !answers.personalized) {
+        return 'personalized';
+      }
+      return null; // Done with questions
+    }
+    // Otherwise, ask about recipient style
     return 'recipientStyle';
   }
 
