@@ -136,7 +136,19 @@ export const ResultCard: React.FC<ResultCardProps> = ({
           <button
             className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
             onClick={() => {
-              const operationId = endpoint.path.replace(/^\//, '').replace(/\//g, '-');
+              // Map endpoint paths to operation IDs
+              const operationIdMap: Record<string, string> = {
+                '/jobs/single-doc-job-template': 'submitSingleDocWithTemplateParams',
+                '/jobs/multi-docs-job-template': 'submitMultiDocWithTemplateParams',
+                '/jobs/multi-doc-merge-job-template': 'mergeMultiDocWithTemplateParams',
+                '/jobs/single-doc': 'singleDocJobParams',
+                '/jobs/multi-doc': 'submitMultiDocParams',
+                '/jobs/multi-doc-merge': 'mergeMultiDocParams',
+                '/jobs/single-pdf-split': 'splitPdfParams',
+                '/jobs/single-pdf-split-addressCapture': 'splitPdfWithCaptureParams',
+              };
+
+              const operationId = operationIdMap[endpoint.path] || endpoint.path.replace(/^\//, '').replace(/\//g, '-');
               window.open(`https://faserrao.github.io/c2m-api-repo/#operation/${operationId}`, '_blank');
             }}
           >
