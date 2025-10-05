@@ -1,0 +1,1 @@
+import React from 'react'; export const ProgressBar=({step,totalSteps}:{step:number,totalSteps:number})=>{const percent=Math.round((step/totalSteps)*100);return(<div className='w-full bg-gray-700 rounded-full h-2 mb-6'><div className='bg-[#00ADB5] h-2 rounded-full' style={{width:`${percent}%`}}></div></div>);};
