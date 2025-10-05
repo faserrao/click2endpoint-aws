@@ -126,17 +126,26 @@ export const ResultCard: React.FC<ResultCardProps> = ({
           </div>
         )}
 
-        <div className="flex gap-4">
-          <button 
-            onClick={onRestart} 
+        <div className="flex gap-4 flex-wrap">
+          <button
+            onClick={onRestart}
             className="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
           >
             🔄 Start Over
           </button>
-          <button 
+          <button
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+            onClick={() => {
+              const operationId = endpoint.path.replace(/^\//, '').replace(/\//g, '-');
+              window.open(`https://faserrao.github.io/c2m-api-repo/#operation/${operationId}`, '_blank');
+            }}
+          >
+            📖 View Documentation
+          </button>
+          <button
             className={`px-6 py-3 rounded-lg transition-colors ${
-              showCodeGenerator 
-                ? 'bg-gray-700 hover:bg-gray-600' 
+              showCodeGenerator
+                ? 'bg-gray-700 hover:bg-gray-600'
                 : 'bg-[#00ADB5] hover:bg-[#00BFC9]'
             }`}
             onClick={() => setShowCodeGenerator(!showCodeGenerator)}
