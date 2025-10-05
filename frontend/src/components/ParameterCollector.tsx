@@ -24,9 +24,12 @@ export const ParameterCollector: React.FC<ParameterCollectorProps> = ({
   const schema = rawSchema.filter(field => {
     const { templateContent } = wizardAnswers;
 
-    // If template contains address list, hide address list ID field
-    if (templateContent === 'addressList' && field.name === 'addressListId') {
-      return false;
+    // If template contains address list, hide address-related fields
+    if (templateContent === 'addressList') {
+      // Hide addressListId and recipientAddressSource fields
+      if (field.name === 'addressListId' || field.name === 'recipientAddressSource') {
+        return false;
+      }
     }
 
     // If template contains document, hide document source field
