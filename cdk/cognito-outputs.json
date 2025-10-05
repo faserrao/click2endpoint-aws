@@ -1,0 +1,24 @@
+[
+    {
+        "OutputKey": "UserPoolId",
+        "OutputValue": "us-east-1_OUxQ8LNIL",
+        "Description": "Cognito User Pool ID",
+        "ExportName": "Click2Endpoint-UserPoolId-dev"
+    },
+    {
+        "OutputKey": "EnvConfig",
+        "OutputValue": "{\n  \"VITE_COGNITO_USER_POOL_ID\": \"us-east-1_OUxQ8LNIL\",\n  \"VITE_COGNITO_CLIENT_ID\": \"4p3um0n1o1o774vl4svgj37r8u\"\n}",
+        "Description": "Environment variables for .env.local"
+    },
+    {
+        "OutputKey": "UserPoolArn",
+        "OutputValue": "arn:aws:cognito-idp:us-east-1:682033482049:userpool/us-east-1_OUxQ8LNIL",
+        "Description": "Cognito User Pool ARN"
+    },
+    {
+        "OutputKey": "WebClientId",
+        "OutputValue": "4p3um0n1o1o774vl4svgj37r8u",
+        "Description": "Cognito App Client ID for Web",
+        "ExportName": "Click2Endpoint-WebClientId-dev"
+    }
+]

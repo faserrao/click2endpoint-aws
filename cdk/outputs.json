@@ -1,0 +1,8 @@
+{
+  "Click2Endpoint-Cognito-dev": {
+    "UserPoolId": "us-east-1_OUxQ8LNIL",
+    "EnvConfig": "{\n  \"VITE_COGNITO_USER_POOL_ID\": \"us-east-1_OUxQ8LNIL\",\n  \"VITE_COGNITO_CLIENT_ID\": \"4p3um0n1o1o774vl4svgj37r8u\"\n}",
+    "UserPoolArn": "arn:aws:cognito-idp:us-east-1:682033482049:userpool/us-east-1_OUxQ8LNIL",
+    "WebClientId": "4p3um0n1o1o774vl4svgj37r8u"
+  }
+}

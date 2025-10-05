@@ -3,7 +3,6 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import * as path from 'path';
 
@@ -35,35 +34,11 @@ export class HostingStack extends cdk.Stack {
       versioned: environment === 'prod',
     });
 
-    // CloudFront Origin Access Identity
-    const originAccessIdentity = new cloudfront.OriginAccessIdentity(
-      this,
-      'OAI',
-      {
-        comment: `OAI for Click2Endpoint ${environment}`,
-      }
-    );
-
-    // Grant CloudFront access to S3 bucket
-    this.bucket.addToResourcePolicy(
-      new iam.PolicyStatement({
-        actions: ['s3:GetObject'],
-        resources: [this.bucket.arnForObjects('*')],
-        principals: [
-          new iam.CanonicalUserPrincipal(
-            originAccessIdentity.cloudFrontOriginAccessIdentityS3CanonicalUserId
-          ),
-        ],
-      })
-    );
-
     // CloudFront Distribution
     this.distribution = new cloudfront.Distribution(this, 'Distribution', {
       comment: `Click2Endpoint ${environment} CDN`,
       defaultBehavior: {
-        origin: new origins.S3Origin(this.bucket, {
-          originAccessIdentity,
-        }),
+        origin: origins.S3BucketOrigin.withOriginAccessControl(this.bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,

@@ -81,7 +81,7 @@ export const CodeGenerator: React.FC<CodeGeneratorProps> = ({
 
   const handleRunCode = async () => {
     setIsRunning(true);
-    
+
     try {
       const response = await fetch('http://localhost:3001/api/execute', {
         method: 'POST',
@@ -93,14 +93,14 @@ export const CodeGenerator: React.FC<CodeGeneratorProps> = ({
           language: selectedLanguage
         }),
       });
-      
+
       const result = await response.json();
       const executionResult: ExecutionResult = {
         ...result,
         timestamp: new Date().toISOString(),
         language: selectedLanguage
       };
-      
+
       if (onExecutionResult) {
         onExecutionResult(executionResult);
       }
@@ -108,11 +108,13 @@ export const CodeGenerator: React.FC<CodeGeneratorProps> = ({
       const executionResult: ExecutionResult = {
         success: false,
         output: '',
-        error: `Failed to execute code: ${error.message}`,
+        error: error instanceof Error && error.message.includes('fetch')
+          ? 'Failed to connect to execution server. Make sure the backend server is running on port 3001 and client credentials are configured in Settings.'
+          : `Failed to execute code: ${error instanceof Error ? error.message : 'Unknown error'}`,
         timestamp: new Date().toISOString(),
         language: selectedLanguage
       };
-      
+
       if (onExecutionResult) {
         onExecutionResult(executionResult);
       }

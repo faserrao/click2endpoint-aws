@@ -172,30 +172,6 @@ function App() {
                 🚀 Start Wizard
               </button>
             </div>
-
-            {/* Settings Reminder Card */}
-            {(!clientId || !clientSecret) && (
-              <div className="bg-gradient-to-r from-yellow-900/40 to-orange-900/40 p-6 rounded-xl border-2 border-yellow-500/60 shadow-lg shadow-yellow-500/20">
-                <div className="flex items-start gap-4">
-                  <div className="text-4xl">⚠️</div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-yellow-400 mb-2">
-                      ⚡ Configure API Credentials Required
-                    </h3>
-                    <p className="text-gray-200 text-sm mb-4 font-medium">
-                      Click the gear icon (⚙️) in the top-right corner to set your Client ID and Client Secret.
-                    </p>
-                    <button
-                      onClick={() => setSettingsOpen(true)}
-                      className="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black rounded-lg text-sm font-bold transition-colors inline-flex items-center gap-2 shadow-md"
-                    >
-                      <Settings className="w-4 h-4" />
-                      Open Settings Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
         
