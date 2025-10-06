@@ -82,8 +82,11 @@ export const CodeGenerator: React.FC<CodeGeneratorProps> = ({
   const handleRunCode = async () => {
     setIsRunning(true);
 
+    // Get execution URL from environment variable or fallback to localhost
+    const executionUrl = import.meta.env.VITE_EXECUTION_API_URL || 'http://localhost:3001/api/execute';
+
     try {
-      const response = await fetch('http://localhost:3001/api/execute', {
+      const response = await fetch(executionUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
