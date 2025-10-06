@@ -33,7 +33,7 @@ export class ExecutionStack extends cdk.Stack {
       authType: lambda.FunctionUrlAuthType.NONE, // Public access
       cors: {
         allowedOrigins: ['*'], // Allow all origins (or specify CloudFront domain)
-        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
+        allowedMethods: [lambda.HttpMethod.POST], // OPTIONS is handled automatically
         allowedHeaders: ['Content-Type'],
       },
     });
