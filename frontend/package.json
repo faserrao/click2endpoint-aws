@@ -10,7 +10,10 @@
     "dev:all": "npm run server & npm run dev"
   },
   "dependencies": {
+    "@aws-amplify/auth": "^6.16.0",
+    "@aws-amplify/core": "^6.13.3",
     "amazon-cognito-identity-js": "^6.3.15",
+    "aws-amplify": "^6.15.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

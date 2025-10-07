@@ -1,6 +1,6 @@
 import type { EndpointInfo } from '../data/endpointMap';
 
-const AUTH_BASE_URL = import.meta.env.VITE_AUTH_BASE_URL || "https://j0dos52r5e.execute-api.us-east-1.amazonaws.com/dev/auth";
+const AUTH_BASE_URL = import.meta.env.VITE_AUTH_BASE_URL || "https://j0dos52r5e.execute-api.us-east-1.amazonaws.com/dev";
 const DEFAULT_MOCK_URL = import.meta.env.VITE_DEFAULT_MOCK_URL || "https://cd140b74-ed23-4980-834b-a966ac3393c1.mock.pstmn.io";
 
 export interface CodeGenerationOptions {

@@ -15,10 +15,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 400,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ error: 'Invalid request body' })
     };
@@ -31,25 +28,9 @@ exports.handler = async (event) => {
     return {
       statusCode: 400,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({ error: 'Code and language are required' })
-    };
-  }
-
-  // Handle OPTIONS request for CORS
-  if (event.requestContext?.http?.method === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
-      },
-      body: ''
     };
   }
 
@@ -63,7 +44,7 @@ exports.handler = async (event) => {
       case 'python':
         filename = path.join(tmpDir, `${fileId}.py`);
         fs.writeFileSync(filename, code);
-        command = `python3 ${filename}`;
+        command = `python ${filename}`; // Lambda Node.js runtime doesn't include Python
         break;
 
       case 'javascript':
@@ -83,10 +64,7 @@ exports.handler = async (event) => {
         return {
           statusCode: 400,
           headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ error: 'Unsupported language' })
         };
@@ -108,10 +86,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           success: true,
@@ -136,10 +111,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 200,
         headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           success: false,
@@ -164,10 +136,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         success: false,

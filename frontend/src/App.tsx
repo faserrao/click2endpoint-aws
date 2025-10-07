@@ -6,7 +6,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { LoginPage } from './components/LoginPage';
 import { loadSettings } from './utils/settings';
 import { getDefaultMockServerUrl } from './services/postmanApi';
-import { cognitoAuth } from './services/cognitoAuth';
+import { amplifyAuth } from './services/amplifyAuth';
 import endpointMap from './data/endpointMap';
 import { Settings, LogOut } from 'lucide-react';
 
@@ -17,8 +17,8 @@ function App() {
   const [currentView, setCurrentView] = useState<'welcome' | 'questions' | 'result'>('welcome');
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [mockServerUrl, setMockServerUrl] = useState<string>(getDefaultMockServerUrl());
-  const [clientId, setClientId] = useState<string>('');
-  const [clientSecret, setClientSecret] = useState<string>('');
+  const [clientId, setClientId] = useState<string>(import.meta.env.VITE_DEFAULT_CLIENT_ID || '');
+  const [clientSecret, setClientSecret] = useState<string>(import.meta.env.VITE_DEFAULT_CLIENT_SECRET || '');
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
   // Check authentication on mount
@@ -28,7 +28,7 @@ function App() {
 
   const checkAuth = async () => {
     try {
-      const user = await cognitoAuth.getCurrentUser();
+      const user = await amplifyAuth.getCurrentUser();
       if (user) {
         setIsAuthenticated(true);
         setCurrentUser(user.username);
@@ -44,17 +44,18 @@ function App() {
     checkAuth();
   };
 
-  const handleLogout = () => {
-    cognitoAuth.logout();
+  const handleLogout = async () => {
+    await amplifyAuth.logout();
     setIsAuthenticated(false);
     setCurrentUser('');
     setCurrentView('welcome');
     setAnswers({});
   };
 
-  // Load settings from localStorage on mount
+  // Load settings from localStorage on mount (override env defaults if present)
   useEffect(() => {
     const settings = loadSettings();
+    // Only override if localStorage has a value, otherwise keep env defaults
     if (settings.clientId) setClientId(settings.clientId);
     if (settings.clientSecret) setClientSecret(settings.clientSecret);
     if (settings.mockServerUrl) setMockServerUrl(settings.mockServerUrl);
@@ -143,7 +144,7 @@ function App() {
         open={settingsOpen}
         onClose={() => {
           setSettingsOpen(false);
-          // Reload settings after closing modal
+          // Reload settings after closing modal (override env defaults if present)
           const settings = loadSettings();
           if (settings.clientId) setClientId(settings.clientId);
           if (settings.clientSecret) setClientSecret(settings.clientSecret);

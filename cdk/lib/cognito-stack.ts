@@ -21,7 +21,7 @@ export class CognitoStack extends cdk.Stack {
       selfSignUpEnabled: false, // Admin creates users
       signInAliases: {
         username: true,
-        email: true,
+        // email: false - removed because users sign in with username only
       },
       autoVerify: {
         email: true,

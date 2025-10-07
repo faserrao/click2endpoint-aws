@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, AlertCircle, Loader } from 'lucide-react';
-import { cognitoAuth } from '../services/cognitoAuth';
+import { amplifyAuth } from '../services/amplifyAuth';
 
 interface LoginPageProps {
   onLoginSuccess: () => void;
@@ -18,7 +18,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      await cognitoAuth.login({ username, password });
+      await amplifyAuth.login(username, password);
       onLoginSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');

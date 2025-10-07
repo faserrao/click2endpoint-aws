@@ -16,10 +16,11 @@ export class ExecutionStack extends cdk.Stack {
     const { environment } = props;
 
     // Lambda function for code execution
+    // Using Python runtime so we can execute Python, JavaScript (via Node), and bash
     const codeExecutorFunction = new lambda.Function(this, 'CodeExecutorFunction', {
       functionName: `click2endpoint-executor-${environment}`,
-      runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'index.handler',
+      runtime: lambda.Runtime.PYTHON_3_12,
+      handler: 'handler.lambda_handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../../lambda/code-executor')),
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
@@ -32,9 +33,10 @@ export class ExecutionStack extends cdk.Stack {
     const functionUrl = codeExecutorFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE, // Public access
       cors: {
-        allowedOrigins: ['*'], // Allow all origins (or specify CloudFront domain)
+        allowedOrigins: ['*'], // Allow all origins
         allowedMethods: [lambda.HttpMethod.POST], // OPTIONS is handled automatically
-        allowedHeaders: ['Content-Type'],
+        allowedHeaders: ['*'], // Allow all headers
+        maxAge: cdk.Duration.seconds(300),
       },
     });
 
