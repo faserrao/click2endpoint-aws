@@ -249,15 +249,12 @@ if __name__ == "__main__":
         
         # Submit request
         result = submit_request(token, payload)
-        
+
         print("\\n✅ SUCCESS!")
         print("="*60)
-        print("Result saved to response.json")
-        
-        # Save response
-        with open("response.json", "w") as f:
-            json.dump(result, f, indent=2)
-            
+        print("\\nResponse:")
+        print(json.dumps(result, indent=2))
+
     except Exception as e:
         print(f"\\n❌ ERROR: {str(e)}")
         exit(1)
@@ -435,15 +432,12 @@ ${includeAuth ? `async function getAccessToken(clientId, clientSecret) {
         
         // Submit request
         const result = await submitRequest(token, payload);
-        
+
         console.log("\\n✅ SUCCESS!");
         console.log("=".repeat(60));
-        console.log("Result saved to response.json");
-        
-        // Save response
-        const fs = require('fs').promises;
-        await fs.writeFile("response.json", JSON.stringify(result, null, 2));
-        
+        console.log("\\nResponse:");
+        console.log(JSON.stringify(result, null, 2));
+
     } catch (error) {
         console.error(\`\\n❌ ERROR: \${error.message}\`);
         process.exit(1);
@@ -554,8 +548,8 @@ fi
 
 echo -e "\\n✅ SUCCESS!"
 echo "=========================================================="
-echo "$RESPONSE_BODY" > response.json
-echo "Result saved to response.json"
+echo -e "\\nResponse:"
+echo "$RESPONSE_BODY" | python3 -m json.tool 2>/dev/null || echo "$RESPONSE_BODY"
 `;
   } else {
     // Non-auth version
@@ -590,8 +584,8 @@ fi
 
 echo -e "\\n✅ SUCCESS!"
 echo "=========================================================="
-echo "$RESPONSE_BODY" > response.json
-echo "Result saved to response.json"
+echo -e "\\nResponse:"
+echo "$RESPONSE_BODY" | python3 -m json.tool 2>/dev/null || echo "$RESPONSE_BODY"
 `;
   }
 }

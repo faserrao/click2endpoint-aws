@@ -149,9 +149,21 @@ export const ResultCard: React.FC<ResultCardProps> = ({
               };
 
               const operationId = operationIdMap[endpoint.path] || endpoint.path.replace(/^\//, '').replace(/\//g, '-');
-              // Add timestamp to force fresh page load, ensuring anchor scroll works on first click
-              const docUrl = `https://faserrao.github.io/c2m-api-repo/?t=${Date.now()}#operation/${operationId}`;
-              window.open(docUrl, '_blank');
+              // Use named window target 'c2m-docs' so it reuses the same tab
+              // This ensures anchor scrolling works on subsequent clicks
+              const docUrl = `https://faserrao.github.io/c2m-api-repo/#operation/${operationId}`;
+              const docWindow = window.open(docUrl, 'c2m-docs');
+
+              // Try to scroll after a short delay (helps on first load)
+              if (docWindow) {
+                setTimeout(() => {
+                  try {
+                    docWindow.location.hash = `operation/${operationId}`;
+                  } catch (e) {
+                    // Cross-origin restriction - ignore
+                  }
+                }, 1500);
+              }
             }}
           >
             📖 View Documentation
