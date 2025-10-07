@@ -149,7 +149,9 @@ export const ResultCard: React.FC<ResultCardProps> = ({
               };
 
               const operationId = operationIdMap[endpoint.path] || endpoint.path.replace(/^\//, '').replace(/\//g, '-');
-              window.open(`https://faserrao.github.io/c2m-api-repo/#operation/${operationId}`, '_blank');
+              // Add timestamp to force fresh page load, ensuring anchor scroll works on first click
+              const docUrl = `https://faserrao.github.io/c2m-api-repo/?t=${Date.now()}#operation/${operationId}`;
+              window.open(docUrl, '_blank');
             }}
           >
             📖 View Documentation
