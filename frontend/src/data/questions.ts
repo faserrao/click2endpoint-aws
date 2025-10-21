@@ -165,9 +165,9 @@ export function getNextQuestion(answers: Record<string, string>): string | null 
     return 'templateContent';
   }
 
-  // Only ask about recipient style if the template doesn't already have addresses
+  // Only ask about recipient style if it's not already determined by template content
   if (!recipientStyle) {
-    // If template contains addresses, skip this question entirely
+    // If template contains addresses, skip this question - addresses come from template
     if (templateUsage === 'true' && templateContent === 'addressList') {
       // Don't ask about recipientStyle - addresses are in template
       // Continue to next question (personalization if multi/merge)
@@ -176,6 +176,17 @@ export function getNextQuestion(answers: Record<string, string>): string | null 
       }
       return null; // Done with questions
     }
+
+    // If template contains the document, addresses MUST be provided in API call
+    // Skip this question entirely - there's no choice to make
+    if (templateUsage === 'true' && templateContent === 'document') {
+      // Continue to next question (personalization if multi/merge)
+      if ((docType === 'multi' || docType === 'merge') && !answers.personalized) {
+        return 'personalized';
+      }
+      return null; // Done with questions
+    }
+
     // Otherwise, ask about recipient style
     return 'recipientStyle';
   }

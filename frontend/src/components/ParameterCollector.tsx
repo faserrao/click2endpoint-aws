@@ -26,8 +26,8 @@ export const ParameterCollector: React.FC<ParameterCollectorProps> = ({
 
     // If template contains address list, hide address-related fields
     if (templateContent === 'addressList') {
-      // Hide addressListId and recipientAddressSource fields
-      if (field.name === 'addressListId' || field.name === 'recipientAddressSource') {
+      // Hide addressListId and recipientAddressSources fields
+      if (field.name === 'addressListId' || field.name === 'recipientAddressSources') {
         return false;
       }
     }
@@ -366,7 +366,7 @@ export const ParameterCollector: React.FC<ParameterCollectorProps> = ({
 
       case 'object':
         // Auto-expand objects within oneOf selections
-        const isWithinOneOf = path.some(p => p === 'paymentDetails' || p === 'documentSourceIdentifier' || p === 'recipientAddressSource');
+        const isWithinOneOf = path.some(p => p === 'paymentDetails' || p === 'documentSourceIdentifier' || p === 'recipientAddressSources');
         const isExpanded = isWithinOneOf ? true : (expandedSections[fieldId] !== false);
         
         return (

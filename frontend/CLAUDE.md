@@ -215,6 +215,87 @@ npm run type-check
 
 ## Recent Changes
 
+### 2025-10-11 - Authentication Consolidation Decision - MAJOR ARCHITECTURE CHANGE ✅
+
+**BREAKING CHANGE: Local Cognito Will Be Removed**
+
+Decision made to consolidate ALL authentication into c2m-api-v2-security as the unified auth service. This will significantly change how click2endpoint-aws authenticates users.
+
+#### What's Changing
+- ❌ **Remove**: Local Cognito User Pool (currently: us-east-1_4fNSSRaag)
+- ❌ **Remove**: AWS Amplify authentication
+- ❌ **Remove**: Hardcoded credentials (test-client-123 / test-secret-456)
+- ✅ **Add**: Call c2m-api-v2-security API for user login
+- ✅ **Add**: Auto-fetch user credentials after login
+- ✅ **Add**: Per-user credential isolation (each user gets unique clientId/clientSecret)
+
+#### New Authentication Flow (After Consolidation)
+```
+1. User enters username/password
+   ↓
+2. Frontend calls: POST https://j0dos52r5e.execute-api.us-east-1.amazonaws.com/dev/auth/user/login
+   ↓
+3. Receives JWT user token
+   ↓
+4. Frontend calls: GET /auth/user/credentials (with JWT)
+   ↓
+5. Receives user's unique clientId/clientSecret
+   ↓
+6. Auto-populate Settings modal (no manual entry)
+   ↓
+7. Code generation uses user's credentials
+```
+
+#### Implementation Timeline
+- **Phase 1** (Week 1): c2m-api-v2-security infrastructure setup
+  - Add Cognito User Pool for humans
+  - Add UserCredentials DynamoDB table
+  - Add Lambda functions: user-login, get-credentials
+  - Add API endpoints: /auth/user/login, /auth/user/credentials
+
+- **Phase 2** (Week 2): User migration
+  - Export users from local Cognito
+  - Create in security repo Cognito
+  - Generate unique credentials per user
+
+- **Phase 3** (Week 3): **click2endpoint-aws integration** ← THIS REPO
+  - Remove CognitoStack from CDK
+  - Replace authService.ts (remove Amplify, use fetch)
+  - Update SettingsModal (read-only credentials display)
+  - Remove hardcoded DEFAULT_CLIENT_ID/SECRET
+  - Update environment variables
+
+- **Phase 4** (Week 4): Testing & documentation
+- **Phase 5** (Week 5): Production deployment
+
+#### Files That Will Change (Phase 3)
+1. `cdk/lib/cognito-stack.ts` - DELETE (remove entire stack)
+2. `cdk/lib/cdk-stack.ts` - Remove Cognito stack reference
+3. `frontend/src/services/amplifyAuth.ts` - Complete rewrite (use fetch, not Amplify)
+4. `frontend/src/components/SettingsModal.tsx` - Show fetched credentials (read-only)
+5. `frontend/src/utils/codeGenerators.ts` - Remove DEFAULT_CLIENT_ID/SECRET constants
+6. `frontend/.env.local` - Remove VITE_COGNITO_* vars, add VITE_AUTH_SERVICE_URL
+
+#### Benefits After Consolidation
+- ✅ No more hardcoded credentials
+- ✅ Each user gets unique clientId/clientSecret
+- ✅ Credentials auto-fetched after login
+- ✅ Single authentication service for entire ecosystem
+- ✅ Easy credential rotation per user
+- ✅ Production-ready security architecture
+
+#### Related Documents
+- `AUTHENTICATION_CONSOLIDATION_PLAN.md` - Complete 5-week implementation plan
+- `CURRENT_AUTHENTICATION_FLOW_DIAGRAM.md` - AS-IS state with diagrams
+- `AUTHENTICATION_INFRASTRUCTURE_COMPARISON.md` - Detailed comparison
+
+#### Status
+- ⏳ **Planning complete** - Awaiting approval to start Phase 1
+- ⏳ **Phase 3 work** (this repo) - Estimated 1 week after Phase 2 completes
+- ⏳ **No code changes yet** - Current authentication still works
+
+---
+
 ### 2025-10-05 - Phase 3 Continuation: Business Rules & Architecture Documentation
 - ✅ Implemented template content business rule (mutually exclusive constraint)
   - Added `templateContent` question to decision tree (addressList/document/neither)

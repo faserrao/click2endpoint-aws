@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { CognitoStack } from '../lib/cognito-stack';
 import { HostingStack } from '../lib/hosting-stack';
 import { ExecutionStack } from '../lib/execution-stack';
 
@@ -16,12 +15,10 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || 'us-east-1',
 };
 
-// Cognito Stack - User authentication
-const cognitoStack = new CognitoStack(app, `Click2Endpoint-Cognito-${environment}`, {
-  env,
-  environment,
-  description: `Click2Endpoint Cognito User Pool (${environment})`,
-});
+// NOTE: Cognito authentication is now provided by the unified C2MUnifiedAuthStack
+// User Pool ID: us-east-1_uxjK9bquL
+// Web Client ID: 5nnh2f6uar3v0lqk4i49r9m8fl
+// See: c2m-api-v2-security/cognito-auth-app/
 
 // Execution Stack - Lambda for code execution
 const executionStack = new ExecutionStack(app, `Click2Endpoint-Execution-${environment}`, {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Settings, X, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { saveSettings, loadSettings } from '../utils/settings';
 import authService from '../services/authService';
+import { getMockServers, getDefaultMockServerUrl, type MockServer } from '../services/postmanApi';
 
 interface SettingsModalProps {
   open: boolean;
@@ -13,7 +14,9 @@ type ConnectionStatus = 'idle' | 'testing' | 'success' | 'error';
 export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [clientId, setClientId] = useState('');
   const [clientSecret, setClientSecret] = useState('');
-  const [mockServerUrl, setMockServerUrl] = useState('');
+  const [mockServers, setMockServers] = useState<MockServer[]>([]);
+  const [selectedMockUrl, setSelectedMockUrl] = useState('');
+  const [loadingMocks, setLoadingMocks] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('idle');
   const [statusMessage, setStatusMessage] = useState('');
 
@@ -21,13 +24,58 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     if (open) {
       const settings = loadSettings();
       setClientId(settings.clientId || '');
-      setMockServerUrl(settings.mockServerUrl || '');
+      setSelectedMockUrl(settings.mockServerUrl || '');
+
       // Never pre-fill secret (security best practice)
       setClientSecret('');
       setConnectionStatus('idle');
       setStatusMessage('');
+
+      // Fetch mock servers dynamically
+      loadMockServers();
     }
   }, [open]);
+
+  const loadMockServers = async () => {
+    setLoadingMocks(true);
+    try {
+      // Fetch mock servers using centralized config
+      const servers = await getMockServers();
+
+      if (servers.length > 0) {
+        setMockServers(servers);
+        // If no mock server is selected yet, select the first one
+        if (!selectedMockUrl) {
+          setSelectedMockUrl(servers[0].url);
+        }
+      } else {
+        // No servers found or no API key, use default
+        const defaultUrl = getDefaultMockServerUrl();
+        setMockServers([{
+          name: 'Default Mock Server (No API Key)',
+          url: defaultUrl,
+          id: 'default',
+          collection: 'C2M API',
+          workspace: 'default'
+        }]);
+        setSelectedMockUrl(defaultUrl);
+      }
+    } catch (error) {
+      console.error('Failed to load mock servers:', error);
+      // Fall back to default on error
+      const defaultUrl = getDefaultMockServerUrl();
+      setMockServers([{
+        name: 'Default Mock Server (Error)',
+        url: defaultUrl,
+        id: 'default',
+        collection: 'C2M API',
+        workspace: 'default'
+      }]);
+      setSelectedMockUrl(defaultUrl);
+    } finally {
+      setLoadingMocks(false);
+    }
+  };
 
   const handleTestConnection = async () => {
     if (!clientId || !clientSecret) {
@@ -59,12 +107,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     saveSettings({
       clientId,
       clientSecret,
-      mockServerUrl
+      mockServerUrl: selectedMockUrl
     });
     onClose();
   };
 
   if (!open) return null;
+
+  const selectedMock = mockServers.find(m => m.url === selectedMockUrl);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50">
@@ -85,18 +135,44 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
         {/* Content */}
         <div className="p-6 space-y-6">
-          {/* Mock Server URL */}
+          {/* Mock Server Selection */}
           <div>
             <label className="block text-sm font-semibold text-gray-300 mb-2">
-              Mock Server URL
+              Mock Server
             </label>
-            <input
-              type="text"
-              value={mockServerUrl}
-              onChange={(e) => setMockServerUrl(e.target.value)}
-              placeholder="https://xxxxx.mock.pstmn.io"
-              className="w-full bg-[#121212] border border-[#3A3A3A] rounded-lg p-3 text-gray-200 placeholder-gray-500 focus:border-[#00ADB5] focus:outline-none"
-            />
+            <p className="text-xs text-gray-400 mb-2">
+              Configured via <code className="bg-[#1E1E1E] px-1 py-0.5 rounded">/config/postman-config.json</code>
+            </p>
+            {loadingMocks ? (
+              <div className="flex items-center gap-2 text-gray-400 p-3">
+                <Loader className="w-4 h-4 animate-spin" />
+                <span>Loading mock servers from configured workspaces...</span>
+              </div>
+            ) : (
+              <>
+                <select
+                  value={selectedMockUrl}
+                  onChange={(e) => setSelectedMockUrl(e.target.value)}
+                  className="w-full bg-[#121212] border border-[#3A3A3A] rounded-lg p-3 text-gray-200 focus:border-[#00ADB5] focus:outline-none"
+                >
+                  {mockServers.map((server) => (
+                    <option key={server.id} value={server.url}>
+                      {server.name}
+                    </option>
+                  ))}
+                </select>
+                {selectedMockUrl && (
+                  <div className="mt-2 text-xs text-gray-400 font-mono break-all bg-[#121212] border border-[#3A3A3A] rounded-lg p-2">
+                    {selectedMockUrl}
+                  </div>
+                )}
+                {mockServers.length === 1 && mockServers[0].id === 'default' && (
+                  <div className="mt-2 bg-yellow-900/20 border border-yellow-700 text-yellow-200 p-3 rounded-lg text-sm">
+                    Using default mock server. Configure API keys in .env.local and enable workspaces in postman-config.json to load dynamic mock servers.
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           {/* Client ID */}

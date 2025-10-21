@@ -38,8 +38,8 @@ function processParametersForPayload(params: any): any {
           }
         }
         
-        // For recipientAddressSource arrays, ensure proper structure
-        if (key === 'recipientAddressSource' && Array.isArray(obj[key])) {
+        // For recipientAddressSources arrays, ensure proper structure
+        if (key === 'recipientAddressSources' && Array.isArray(obj[key])) {
           obj[key] = obj[key].map((item: any) => {
             // Clean up the structure - keep only the non-empty option
             const cleaned: any = {};

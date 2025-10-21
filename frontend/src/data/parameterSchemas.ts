@@ -150,7 +150,7 @@ export const parameterSchemas: EndpointParameters = {
       ]
     },
     {
-      name: 'recipientAddressSource',
+      name: 'recipientAddressSources',
       label: 'Recipients',
       type: 'array',
       required: true,
@@ -561,7 +561,7 @@ export const parameterSchemas: EndpointParameters = {
           ]
         },
         {
-          name: 'recipientAddressSource',
+          name: 'recipientAddressSources',
           label: 'Recipient',
           type: 'object',
           required: true,
@@ -964,7 +964,7 @@ export const parameterSchemas: EndpointParameters = {
       ]
     },
     {
-      name: 'recipientAddressSource',
+      name: 'recipientAddressSources',
       label: 'Recipients',
       type: 'array',
       required: true,
@@ -1446,7 +1446,7 @@ export const parameterSchemas: EndpointParameters = {
           ]
         },
         {
-          name: 'recipientAddressSource',
+          name: 'recipientAddressSources',
           label: 'Recipient',
           type: 'object',
           required: true,
@@ -1854,7 +1854,7 @@ export const parameterSchemas: EndpointParameters = {
       ]
     },
     {
-      name: 'recipientAddressSource',
+      name: 'recipientAddressSources',
       label: 'Recipient',
       type: 'object',
       required: true,
